@@ -12,13 +12,18 @@ class CategoryController extends Controller
         return Category::all();
     }
 
-    public function create()
+    public function create(Request $request)
     { 
-        //
     }
-
+    
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required|max:255]',
+            'is_active' => 'boolean'            
+        ]);
+
+        return Category::create($request->all());
         //
     }
 
