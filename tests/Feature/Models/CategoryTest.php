@@ -95,4 +95,26 @@ class CategoryTest extends TestCase
 
         $this->assertTrue(Uuid::isValid($categoryTestUUID->id));
     }
+
+    public function testDelete()
+    {
+        $category1 = Category::create([
+            'name' => 'test1',
+            'description' => 'test-desc-1'
+        ]);
+
+        $category2 = Category::create([
+            'name' => 'test2',
+            'description' => 'test-desc-2'
+        ]);
+
+
+        $this->assertCount(2, Category::all());
+
+        $category1->delete();
+        $this->assertCount(1, Category::all());
+
+        $category2->delete();
+        $this->assertCount(0, Category::all());
+    }
 }
