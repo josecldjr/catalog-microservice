@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class CategoryTest extends TestCase
 {
@@ -33,5 +34,54 @@ class CategoryTest extends TestCase
             'updated_at',
             'deleted_at',
         ], $categoryKeys);
+    }
+
+
+    public function testCreate()
+    {
+        $category = Category::create([
+            'name' => 'test1',
+        ]);
+        $category->refresh();
+
+        $this->assertEquals('test1', $category->name);
+        $this->assertNull($category->description);
+        $this->assertTrue($category->is_active);
+
+        // with null
+        $categoryWithNull = Category::create([
+            'name' => 'test1',
+            'description' => null,
+        ]);
+        $categoryWithNull->refresh();
+
+        $this->assertNull($categoryWithNull->description);
+
+        // with some text
+        $categoryWithSomeText = Category::create([
+            'name' => 'test1',
+            'description' => 'test_description',
+        ]);
+        $categoryWithSomeText->refresh();
+
+        $this->assertEquals('test_description', $categoryWithSomeText->description);
+
+        // with is_active false
+        $categoryWithActiveFalse = Category::create([
+            'name' => 'test1',
+            'is_active' => false,
+        ]);
+        $categoryWithActiveFalse->refresh();
+
+        $this->assertFalse($categoryWithActiveFalse->is_active);
+
+        // with is_active true
+        $categoryWithActiveTrue = Category::create([
+            'name' => 'test1',
+            'is_active' => true,
+        ]);
+        $categoryWithActiveTrue->refresh();
+
+        $this->assertTrue($categoryWithActiveTrue->is_active);
     }
 }
