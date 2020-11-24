@@ -5,6 +5,9 @@ namespace Tests\Feature\Feature\Models;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
+
+use \Ramsey\Uuid\Uuid;
+
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use phpDocumentor\Reflection\Types\Boolean;
@@ -83,5 +86,13 @@ class CategoryTest extends TestCase
         $categoryWithActiveTrue->refresh();
 
         $this->assertTrue($categoryWithActiveTrue->is_active);
+
+        // test if uuid is valid
+        $categoryTestUUID = Category::create([
+            'name' => 'test1',
+        ]);
+        $categoryTestUUID->refresh();
+
+        $this->assertTrue(Uuid::isValid($categoryTestUUID->id));
     }
 }
