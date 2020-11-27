@@ -33,6 +33,7 @@ services:
             - app-network
         depends_on:
             - app
+            - db
 
     db:
         build: ./.docker/mysql
