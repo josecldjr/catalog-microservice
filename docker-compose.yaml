@@ -36,7 +36,7 @@ services:
             - db
 
     db:
-        build: ./.docker/mysql
+        build: ./.docker/db
         container_name: micro-videos-db
         restart: always
         tty: true
