@@ -9,7 +9,7 @@ class CategoryController extends Controller
 {
 
     private $rules = [
-        'name' => 'required|max:255]',
+        'name' => 'required|max:255',
         'is_active' => 'boolean'
     ];
 
@@ -26,7 +26,7 @@ class CategoryController extends Controller
     {
         $this->validate($request, $this->rules);
 
-        return Category::create($request->all());    
+        return Category::create($request->all());
     }
 
     public function show(Category $category)
@@ -48,7 +48,7 @@ class CategoryController extends Controller
     }
 
     public function destroy(Category $category)
-    {        
+    {
         $category->delete();
         return response()->noContent(); // 204 - No Content
     }
