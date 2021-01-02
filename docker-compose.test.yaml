@@ -2,8 +2,10 @@ version: "3"
 
 services:
     app:
-        build: .
-        container_name: app 
+        build:
+            context: ./
+            dockerfile: Dockerfile.prod
+        container_name: app
         volumes:
             - .:/var/www
         networks:
@@ -37,9 +39,10 @@ services:
         volumes:
             - ./.docker/dbdata:/var/lib/mysql
             - ./.docker/mysql:/docker-entrypoint-initdb.d
-        environment: 
+        environment:
             - MYSQL_ROOT_PASSWORD=root
             - MYSQL_USER=root
+            - MYSQL_DATABASE=code_micro_videos_test
         networks:
             - app-network
 
