@@ -7,10 +7,11 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\Traits\TestValidations;
 
 class CategoryControllerTest extends TestCase
 {
-    use DatabaseMigrations;
+    use DatabaseMigrations, TestValidations;
 
     public function testList()
     {
@@ -65,34 +66,25 @@ class CategoryControllerTest extends TestCase
 
     protected function assertInvalidationRequired($response)
     {
-        $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['name'])
-            ->assertJsonMissingValidationErrors((['is_active']))
-            ->assertJsonFragment(([
-                \Lang::get('validation.required', ['attribute' => 'name'])
-            ]));
+
+        $this
+            ->assertInvalidationsFields($response, ['name'], 'required', []);
+        $response 
+            ->assertJsonMissingValidationErrors((['is_active']));
     }
 
     protected function assertInvalidationMax($response)
     {
-        $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['name'])
-            ->assertJsonFragment([
-                \Lang::get('validation.max.string', ['attribute' => 'name', 'max' => 255])
-            ]);
+        $this
+            ->assertInvalidationsFields($response, ['name'], 'max.string', [ 'max' => 255]);
+       
     }
 
     protected function assertInvalidationBoolean($response)
     {
-        $response
-            ->assertStatus(422)
-            ->assertJsonValidationErrors(['is_active'])
-            ->assertJsonFragment([
-                \Lang::get('validation.boolean', ['attribute' => 'is active'])
+        $this
+            ->assertInvalidationsFields($response, ['is_active'], 'boolean', [ 'max' => 255]);
 
-            ]);
     }
 
     public function testStore()
