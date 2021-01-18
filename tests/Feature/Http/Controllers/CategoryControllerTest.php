@@ -35,17 +35,26 @@ class CategoryControllerTest extends TestCase
 
     public function testInvalidationData()
     {
-        $response = $this->json('POST', route('categories.store'), []);
+        $data = [
+            'name' => ''
+        ];
+        
+        $this->assertInvalidationInStoreAction($data, 'required');
 
-        $this->assertInvalidationRequired($response);
-
-        $response = $this->json('POST', route('categories.store'), [
+        $data = [
             'name' => str_repeat('a', 256),
-            'is_active' => 'a'
-        ]);
+        ];
+        
+        $this->assertInvalidationInStoreAction($data, 'max.string', ['max' => 255]);
+        
+        // $data = [ 
+        //     'is_active' => 'a'
+        // ];
+        // $this->assertInvalidationInStoreAction($data, 'boolean');
 
-        $this->assertInvalidationMax($response);
-        $this->assertInvalidationBoolean($response);
+
+        // $this->assertInvalidationMax($response);
+        // $this->assertInvalidationBoolean($response);
 
         $category = factory(Category::class)->create();
         $response = $this->json(
@@ -60,8 +69,8 @@ class CategoryControllerTest extends TestCase
             ]
         );
 
-        $this->assertInvalidationMax($response);
-        $this->assertInvalidationBoolean($response);
+        // $this->assertInvalidationMax($response);
+        // $this->assertInvalidationBoolean($response);
     }
 
     protected function assertInvalidationRequired($response)
@@ -70,7 +79,7 @@ class CategoryControllerTest extends TestCase
         $this
             ->assertInvalidationsFields($response, ['name'], 'required', []);
         $response 
-            ->assertJsonMissingValidationErrors((['is_active']));
+            ->assertJsonMissingValidationErrors(['is_active']);
     }
 
     protected function assertInvalidationMax($response)
@@ -82,16 +91,13 @@ class CategoryControllerTest extends TestCase
 
     protected function assertInvalidationBoolean($response)
     {
-        $this
-            ->assertInvalidationsFields($response, ['is_active'], 'boolean', [ 'max' => 255]);
+        $this->assertInvalidationsFields($response, ['is_active'], 'boolean', [ 'max' => 255]);
 
     }
 
     public function testStore()
     {
-        $response = $this->json('POST', route('categories.store'),  [
-            'name' => 'test'
-        ]);
+        $response = $this->json('POST', route('categories.store'), [ 'name' => 'test' ]);
 
         $id = $response->json('id');
 
@@ -189,5 +195,10 @@ class CategoryControllerTest extends TestCase
         
         $this->assertNull($category);
         
+    }
+
+
+    function routeStore() {
+        return route('categories.store');
     }
 }

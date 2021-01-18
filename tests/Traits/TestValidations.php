@@ -7,6 +7,18 @@ use Illuminate\Foundation\Testing\TestResponse;
 
 trait TestValidations 
 {
+
+    protected function assertInvalidationInStoreAction(
+        array $data,
+        string $rule,
+        $ruleParams = []
+
+    ) {
+        $response = $this->json('POST', $this->routeStore(), $data);
+        $fields = array_keys($data);
+        $this->assertInvalidationsFields($response, $fields, $rule, $ruleParams);
+    }
+
     protected function assertInvalidationsFields (
         TestResponse $response,
         array $fields,
