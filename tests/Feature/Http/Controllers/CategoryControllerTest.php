@@ -102,24 +102,22 @@ class CategoryControllerTest extends TestCase
             'name' => 'test'
         ];
 
-        $this->assertStore($data, $data + ['description' => null, 'is_active' => true]);
-        // $response = $this->json('POST', route('categories.store'), [ 'name' => 'test' ] );
+        $response = $this->assertStore($data, $data + ['description' => null, 'is_active' => true, 'deleted_at' => null]);
+        $response->assertJsonStructure([
+            'created_at', 'updated_at'
+        ]);
 
-        // $id = $response->json('id');
-
-        // $category = Category::find($id);
-        // $response
-        //     ->assertStatus(201)
-        //     ->assertJson($category->toArray());
-        // $this->assertTrue($response->json('is_active'));
-        // $this->assertNUll($response->json('description'));
-
-        // //
-
+        $data = [
+            'name' => 'test',
+            'description' => 'some text here',
+            'is_active' => false,
+        ];
+            
+            $this->assertStore($data, $data + ['description' => 'some text here', 'is_active' => false]);
         // $response = $this->json('POST', route('categories.store'),  [
-        //     'name' => 'test',
-        //     'is_active' => false,
-        //     'description' => 'some text here'
+            // 'name' => 'test',
+            // 'is_active' => false,
+            // 'description' => 'some text here'
         // ]);
 
         // $id = $response->json('id');

@@ -4,7 +4,7 @@ namespace Tests\Traits;
 
 trait TestSaves 
 {
-    protected function assertStore($sendData, $testData) {
+    protected function assertStore(array $sendData, array $testDatabase, array $testJsonData = null) {
         $response = $this->json('POST', $this->routeStore(), $sendData);
         $response->assertStatus(201);
 
@@ -14,6 +14,10 @@ trait TestSaves
 
         $model = $this->model();
         $table = (new $model)->getTable();
-        $this->assertDatabaseHas($table, $testData + ['id' => $response->json('id')]) ;
+        $this->assertDatabaseHas($table, $testDatabase + ['id' => $response->json('id')]);
+        $testResponse = $testJsonData ?? $testDatabase;
+        $response->assertJsonFragment($testResponse + ['id' => $response->json('id')] );
+
+        return $response;
     }
 }
