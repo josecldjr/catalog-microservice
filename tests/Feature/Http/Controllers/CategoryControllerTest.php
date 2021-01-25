@@ -8,10 +8,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Tests\Traits\TestValidations;
+use Tests\Traits\TestSaves;
 
 class CategoryControllerTest extends TestCase
 {
-    use DatabaseMigrations, TestValidations;
+    use DatabaseMigrations, TestValidations, TestSaves;
 
     public function testList()
     {
@@ -97,33 +98,38 @@ class CategoryControllerTest extends TestCase
 
     public function testStore()
     {
-        $response = $this->json('POST', route('categories.store'), [ 'name' => 'test' ]);
+        $data = [
+            'name' => 'test'
+        ];
 
-        $id = $response->json('id');
+        $this->assertStore($data, $data + ['description' => null, 'is_active' => true]);
+        // $response = $this->json('POST', route('categories.store'), [ 'name' => 'test' ] );
 
-        $category = Category::find($id);
-        $response
-            ->assertStatus(201)
-            ->assertJson($category->toArray());
-        $this->assertTrue($response->json('is_active'));
-        $this->assertNUll($response->json('description'));
+        // $id = $response->json('id');
 
-        //
+        // $category = Category::find($id);
+        // $response
+        //     ->assertStatus(201)
+        //     ->assertJson($category->toArray());
+        // $this->assertTrue($response->json('is_active'));
+        // $this->assertNUll($response->json('description'));
 
-        $response = $this->json('POST', route('categories.store'),  [
-            'name' => 'test',
-            'is_active' => false,
-            'description' => 'some text here'
-        ]);
+        // //
 
-        $id = $response->json('id');
+        // $response = $this->json('POST', route('categories.store'),  [
+        //     'name' => 'test',
+        //     'is_active' => false,
+        //     'description' => 'some text here'
+        // ]);
 
-        $category = Category::find($id);
-        $response
-            ->assertStatus(201)
-            ->assertJson($category->toArray());
-        $this->assertFalse($response->json('is_active'));
-        $this->assertEquals($response->json('description'), 'some text here');
+        // $id = $response->json('id');
+
+        // $category = Category::find($id);
+        // $response
+        //     ->assertStatus(201)
+        //     ->assertJson($category->toArray());
+        // $this->assertFalse($response->json('is_active'));
+        // $this->assertEquals($response->json('description'), 'some text here');
     }
 
     public function testUpdte()
@@ -200,5 +206,9 @@ class CategoryControllerTest extends TestCase
 
     function routeStore() {
         return route('categories.store');
+    }
+
+    protected function model() {
+        return Category::class;
     }
 }
