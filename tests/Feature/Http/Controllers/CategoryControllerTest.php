@@ -14,6 +14,14 @@ class CategoryControllerTest extends TestCase
 {
     use DatabaseMigrations, TestValidations, TestSaves;
 
+
+ protected function setUp(): void {
+    
+    parent::setUp();
+    $this->getMockForAbstractClass();
+    
+ }
+
     public function testList()
     {
         $category = factory(Category::class)->create();
